@@ -14,7 +14,7 @@ export function BottomNav() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-surface-bright pb-[env(safe-area-inset-bottom)]">
+    <nav className="shrink-0 bg-surface border-t border-surface-bright pb-[env(safe-area-inset-bottom)]">
       <div className="flex max-w-lg mx-auto">
         {tabs.map((tab) => (
           <Link
