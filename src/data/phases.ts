@@ -88,11 +88,13 @@ export const phases: Record<number, PhaseData> = {
   3: phase3,
 }
 
+const EMPTY: PhaseExercise[] = []
+
 export function getPhaseExercises(phase: number, sessionType: SessionType): PhaseExercise[] {
-  if (sessionType === 'rest' || sessionType === 'yoga') return []
+  if (sessionType === 'rest' || sessionType === 'yoga') return EMPTY
   const phaseData = phases[phase]
-  if (!phaseData) return []
-  return phaseData[sessionType] || []
+  if (!phaseData) return EMPTY
+  return phaseData[sessionType] || EMPTY
 }
 
 export const phaseWeekCounts: Record<number, number> = { 1: 4, 2: 6, 3: 6 }
