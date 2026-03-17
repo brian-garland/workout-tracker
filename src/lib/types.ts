@@ -1,7 +1,7 @@
 export interface Exercise {
   id: number
   name: string
-  category: 'lower' | 'upper_pull' | 'upper_push' | 'warmup' | 'accessory'
+  category: 'lower' | 'upper_pull' | 'upper_push'
   coaching_note: string | null
   is_caution: boolean
   caution_note: string | null

@@ -3,11 +3,11 @@ import type { DaySchedule } from '../lib/types'
 export const weekSchedule: DaySchedule[] = [
   { dayName: 'Mon', sessionType: 'lower_a', displayName: 'Lower Body A' },
   { dayName: 'Tue', sessionType: 'pull', displayName: 'Upper Pull' },
-  { dayName: 'Wed', sessionType: 'push', displayName: 'Upper Push' },
+  { dayName: 'Wed', sessionType: 'yoga', displayName: 'Yoga Sculpt / Rest' },
   { dayName: 'Thu', sessionType: 'lower_b', displayName: 'Lower Body B' },
-  { dayName: 'Fri', sessionType: 'pull', displayName: 'Upper Pull' },
-  { dayName: 'Sat', sessionType: 'push', displayName: 'Upper Push' },
-  { dayName: 'Sun', sessionType: 'rest', displayName: 'Rest / Yoga' },
+  { dayName: 'Fri', sessionType: 'push', displayName: 'Upper Push' },
+  { dayName: 'Sat', sessionType: 'yoga', displayName: 'Yoga' },
+  { dayName: 'Sun', sessionType: 'rest', displayName: 'Rest / Light Walk' },
 ]
 
 export function getSessionForDate(date: Date): DaySchedule {

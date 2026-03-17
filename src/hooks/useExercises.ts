@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import type { Exercise } from '../lib/types'
 
@@ -24,6 +24,7 @@ export function useExercises() {
 
 export function useExerciseByName() {
   const { exercises, loading } = useExercises()
-  const map = new Map(exercises.map((e) => [e.name, e]))
-  return { getExercise: (name: string) => map.get(name), exercises, loading }
+  const map = useMemo(() => new Map(exercises.map((e) => [e.name, e])), [exercises])
+  const getExercise = useCallback((name: string) => map.get(name), [map])
+  return { getExercise, exercises, loading }
 }

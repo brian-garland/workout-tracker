@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { phaseWeekCounts } from '../data/phases'
 
 interface Settings {
   phase: number
@@ -32,16 +33,27 @@ export function useSettings() {
   const advanceWeek = useCallback(() => {
     setSettings((prev) => {
       const nextWeek = prev.weekNumber + 1
-      if (prev.phase === 1 && nextWeek > 5) {
-        return { phase: 2, weekNumber: 1 }
+      const maxWeeks = phaseWeekCounts[prev.phase] ?? 6
+      if (nextWeek > maxWeeks && prev.phase < 3) {
+        return { phase: prev.phase + 1, weekNumber: 1 }
       }
-      if (prev.phase === 2 && nextWeek > 5) {
-        return { phase: 3, weekNumber: 1 }
-      }
-      if (prev.phase === 3 && nextWeek > 6) {
-        return { phase: 3, weekNumber: 6 } // stay at max
+      if (nextWeek > maxWeeks) {
+        return prev // stay at max
       }
       return { ...prev, weekNumber: nextWeek }
+    })
+  }, [])
+
+  const rewindWeek = useCallback(() => {
+    setSettings((prev) => {
+      if (prev.weekNumber > 1) {
+        return { ...prev, weekNumber: prev.weekNumber - 1 }
+      }
+      if (prev.phase > 1) {
+        const prevPhaseWeeks = phaseWeekCounts[prev.phase - 1] ?? 6
+        return { phase: prev.phase - 1, weekNumber: prevPhaseWeeks }
+      }
+      return prev // Already at Phase 1 Week 1
     })
   }, [])
 
@@ -53,5 +65,5 @@ export function useSettings() {
     setSettings((prev) => ({ ...prev, weekNumber }))
   }, [])
 
-  return { ...settings, advanceWeek, setPhase, setWeek }
+  return { ...settings, advanceWeek, rewindWeek, setPhase, setWeek }
 }

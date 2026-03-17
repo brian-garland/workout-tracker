@@ -34,7 +34,7 @@ export function SessionView() {
   const schedule = getSessionForDate(sessionDate)
   const phaseExercises = getPhaseExercises(phase, schedule.sessionType)
   const isLower = schedule.sessionType === 'lower_a' || schedule.sessionType === 'lower_b'
-  const isRest = schedule.sessionType === 'rest'
+  const isRest = schedule.sessionType === 'rest' || schedule.sessionType === 'yoga'
 
   const { previousSets } = useLatestSets(schedule.sessionType, dateStr)
 
@@ -142,13 +142,25 @@ export function SessionView() {
   })
 
   if (isRest) {
+    const isYoga = schedule.sessionType === 'yoga'
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{dayLabel}</h1>
+        <div>
+          <h1 className="text-2xl font-bold">{schedule.displayName}</h1>
+          <p className="text-text-muted">{dayLabel}</p>
+          <div className="flex gap-2 mt-2">
+            <Badge variant="primary">Phase {phase}</Badge>
+            <Badge>Week {weekNumber}</Badge>
+          </div>
+        </div>
         <Card className="text-center py-12 space-y-3">
-          <div className="text-4xl">&#129506;</div>
-          <h2 className="text-xl font-semibold">Rest Day</h2>
-          <p className="text-text-muted">Recovery is part of the program. Stretch, hydrate, sleep well.</p>
+          <div className="text-4xl">{isYoga ? '\u{1F9D8}' : '\u{1F6CC}'}</div>
+          <h2 className="text-xl font-semibold">{isYoga ? 'Yoga / Active Recovery' : 'Rest Day'}</h2>
+          <p className="text-text-muted">
+            {isYoga
+              ? 'Yoga sculpt, mobility work, or light activity. Listen to your body.'
+              : 'Recovery is part of the program. Stretch, hydrate, sleep well.'}
+          </p>
         </Card>
       </div>
     )

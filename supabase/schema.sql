@@ -2,13 +2,20 @@
 -- Run this in the Supabase SQL Editor
 
 -- ============================================
+-- WARNING: DESTROYS ALL DATA. Only run on fresh/dev databases.
+-- ============================================
+drop table if exists sets cascade;
+drop table if exists sessions cascade;
+drop table if exists exercises cascade;
+
+-- ============================================
 -- TABLES
 -- ============================================
 
 create table exercises (
   id bigint primary key generated always as identity,
   name text not null unique,
-  category text not null,  -- 'lower', 'upper_pull', 'upper_push', 'warmup', 'accessory'
+  category text not null,  -- 'lower', 'upper_pull', 'upper_push'
   coaching_note text,
   is_caution boolean default false,
   caution_note text
@@ -61,41 +68,45 @@ create index idx_sets_exercise on sets(exercise_id);
 
 -- Lower Body Exercises
 insert into exercises (name, category, coaching_note, is_caution, caution_note) values
-  ('Barbell Back Squat', 'lower', 'Brace core, break at hips and knees simultaneously. Aim for parallel depth.', false, null),
-  ('Romanian Deadlift', 'lower', 'Hinge at hips, slight knee bend. Feel stretch in hamstrings. Keep bar close to legs.', false, null),
-  ('Leg Press', 'lower', 'Feet shoulder-width on platform. Don''t lock out knees at top.', false, null),
-  ('Bulgarian Split Squat', 'lower', 'Rear foot on bench. Keep torso upright. Control the descent.', true, 'Watch knee tracking over toes. Stop if sharp knee pain.'),
-  ('Walking Lunges', 'lower', 'Long stride, upright torso. Drive through front heel.', false, null),
-  ('Leg Curl', 'lower', 'Control the eccentric. Full range of motion.', false, null),
-  ('Leg Extension', 'lower', 'Pause at top. Don''t use momentum.', true, 'Light weight, high reps only. Stop if knee pain.'),
-  ('Calf Raise', 'lower', 'Full stretch at bottom, pause at top. Slow eccentric.', false, null),
-  ('Hip Thrust', 'lower', 'Drive through heels. Squeeze glutes at top. Don''t hyperextend lower back.', false, null),
-  ('Goblet Squat', 'lower', 'Hold dumbbell at chest. Sit between legs. Great for warming up squat pattern.', false, null),
-  ('Sumo Deadlift', 'lower', 'Wide stance, toes out. Drive through heels. Keep chest up.', false, null),
-  ('Front Squat', 'lower', 'Elbows high, bar in front rack. More quad-dominant than back squat.', true, 'Requires good wrist/shoulder mobility. Use cross-arm grip if needed.'),
-  ('Step Ups', 'lower', 'Drive through top foot. Don''t push off bottom foot. Control descent.', false, null),
-  ('Glute Bridge', 'lower', 'Shoulders on ground. Squeeze glutes at top. Good activation exercise.', false, null),
+  ('Leg Press', 'lower', 'Feet mid-high on plate. Controlled descent. Don''t aggressively lock out at top.', false, null),
+  ('Terminal Knee Extension with Band (TKE)', 'lower', 'Anchor band behind knee. Stand on slight heel raise. Drive knee to full extension. VMO priority exercise.', false, null),
+  ('Isometric Wall Sit', 'lower', 'Knees at 60 degrees, not 90. Pain-free range only.', false, null),
+  ('Glute Bridge', 'lower', 'Drive through heels. Full hip extension at top.', false, null),
+  ('Standing Calf Raises', 'lower', 'Slow and controlled. Both soleus and gastroc support knee mechanics.', false, null),
+  ('Step-Ups', 'lower', 'Lead with working leg. Don''t push off trailing foot. Control the descent.', false, null),
+  ('Romanian Deadlift (RDL)', 'lower', 'Soft knee, hinge from hip. Start with dumbbells. Hamstring lengthening under load.', false, null),
+  ('Side-Lying Hip Abduction with Band', 'lower', 'Glute med activation. Critical for IT band tension and lateral knee stability.', false, null),
+  ('Reverse Lunge', 'lower', 'Rear foot drops straight down. Front knee stacked over ankle. Less patellar load than forward lunge.', false, null),
+  ('Leg Press (with pause)', 'lower', 'Increase weight 5-10% from Phase 1. Add a 2-second pause at bottom.', false, null),
+  ('Single-Leg Wall Sit', 'lower', 'Assisted if needed. Progress from double leg Phase 1.', false, null),
+  ('Single-Leg Glute Bridge', 'lower', 'Drive through heel, full hip extension.', false, null),
+  ('Standing Calf Raises (weighted)', 'lower', 'Add dumbbell or use calf raise machine. Increase load from Phase 1.', false, null),
+  ('Step-Ups (tall box, with dumbbells)', 'lower', 'Increase box height from Phase 1. Add light dumbbells. Same form cues apply.', false, null),
+  ('Single-Leg RDL', 'lower', 'Progress from bilateral RDL. Use dumbbells. Control balance.', false, null),
+  ('Bulgarian Split Squat', 'lower', 'Back foot elevated. Front shin vertical. Only deepen as comfort allows.', true, 'High patellar load movement — earn the depth. Stop well above 90 degrees initially.'),
+  ('Nordic Curl Negatives', 'lower', '4-5 second eccentric lowering only. Anchor feet under bench or have partner hold. Clinical gold standard for hamstring injury prevention.', false, null),
+  ('Leg Press (heavy)', 'lower', 'Working at higher intensity now. Full range, controlled eccentric.', false, null),
+  ('Step-Down Exercise', 'lower', 'Stand on step, slowly lower opposite heel toward floor without touching, return. Clinical VMO and patellar tracking exercise.', false, null),
+  ('Sled Push', 'lower', 'Zero patellar compression, high quad and glute demand. Directly mimics running mechanics. Load moderately.', false, null),
+  ('Single-Leg Glute Bridge (elevated)', 'lower', 'Foot on bench. Full hip extension. Increased hamstring demand.', false, null),
+  ('Standing Calf Raises (heavy)', 'lower', 'Heavy load, slow tempo. 2 sec up, 2 sec hold, 3 sec down.', false, null),
+  ('Bulgarian Split Squat (full depth)', 'lower', 'Earned depth from Phase 2. Add dumbbells or barbell. Front shin vertical.', true, 'High patellar load — only progress to full depth if pain-free.'),
+  ('Single-Leg RDL (heavier)', 'lower', 'Increase load from Phase 2. Full hamstring stretch.', false, null),
+  ('TKE with Band + Hip Abduction', 'lower', 'Maintained as warm-up staple and session finisher in Phase 3.', false, null),
 
   -- Upper Pull Exercises
-  ('Barbell Row', 'upper_pull', 'Hinge forward ~45 degrees. Pull to lower chest. Squeeze shoulder blades.', false, null),
-  ('Pull Up', 'upper_pull', 'Full hang at bottom. Pull until chin over bar. Control the descent.', false, null),
-  ('Lat Pulldown', 'upper_pull', 'Slight lean back. Pull to upper chest. Squeeze lats at bottom.', false, null),
-  ('Cable Row', 'upper_pull', 'Sit upright. Pull to belly button. Squeeze shoulder blades together.', false, null),
-  ('Face Pull', 'upper_pull', 'Pull rope to face level. Externally rotate at top. Great for rear delts and shoulder health.', false, null),
-  ('Dumbbell Row', 'upper_pull', 'One arm at a time. Pull to hip. Keep elbow close to body.', false, null),
-  ('Hammer Curl', 'upper_pull', 'Neutral grip. No swinging. Squeeze at top.', false, null),
-  ('Barbell Curl', 'upper_pull', 'Elbows pinned to sides. Full range of motion. Control the negative.', false, null),
-  ('Rear Delt Fly', 'upper_pull', 'Slight bend in elbows. Squeeze shoulder blades. Light weight, high reps.', false, null),
-  ('Shrugs', 'upper_pull', 'Straight up, not rolling. Hold at top for 1 second.', false, null),
+  ('Barbell or Dumbbell Row', 'upper_pull', 'Primary back mass builder. Control the eccentric.', false, null),
+  ('Lat Pulldown or Weighted Pull-Up', 'upper_pull', 'Full stretch at top. Drive elbows down not hands.', false, null),
+  ('Seated Cable Row (narrow grip)', 'upper_pull', 'Mid-back thickness. Keep chest tall throughout.', false, null),
+  ('Face Pulls (cable)', 'upper_pull', 'Rear delt and external rotator health. Non-negotiable for shoulder longevity.', false, null),
+  ('Incline Dumbbell Curl', 'upper_pull', 'Full bicep stretch at bottom. Don''t rush the eccentric.', false, null),
+  ('Hammer Curl', 'upper_pull', 'Brachialis and forearm development.', false, null),
 
   -- Upper Push Exercises
-  ('Barbell Bench Press', 'upper_push', 'Arch back slightly, feet flat. Touch chest, drive up. Keep wrists straight.', false, null),
-  ('Overhead Press', 'upper_push', 'Brace core. Press straight up, move head through at top. Don''t lean back excessively.', true, 'Stop if shoulder pain. Use dumbbells as alternative if needed.'),
-  ('Incline Dumbbell Press', 'upper_push', '30-45 degree incline. Press up and slightly in. Good upper chest builder.', false, null),
-  ('Dumbbell Lateral Raise', 'upper_push', 'Slight bend in elbows. Raise to shoulder height. Control the descent.', false, null),
-  ('Tricep Pushdown', 'upper_push', 'Elbows pinned to sides. Full extension. Squeeze at bottom.', false, null),
-  ('Cable Fly', 'upper_push', 'Slight forward lean. Bring hands together with slight bend in elbows.', false, null),
-  ('Dips', 'upper_push', 'Lean slightly forward for chest emphasis. Control descent. Don''t go too deep initially.', true, 'Stop if shoulder pain. Can substitute with close-grip bench.'),
-  ('Skull Crushers', 'upper_push', 'Lower to forehead area. Keep elbows pointed up. Use EZ bar for wrist comfort.', false, null),
-  ('Arnold Press', 'upper_push', 'Start palms facing you, rotate as you press. Good shoulder builder.', false, null),
-  ('Close Grip Bench', 'upper_push', 'Hands shoulder-width. Elbows close to body. Great tricep builder.', false, null);
+  ('Barbell or Dumbbell Bench Press', 'upper_push', 'Keep it heavy relative to capacity. Primary chest strength movement.', false, null),
+  ('Incline Dumbbell Press', 'upper_push', 'Upper chest emphasis. Full stretch at bottom.', false, null),
+  ('Overhead Press', 'upper_push', 'Primary shoulder mass builder. Seated or standing both fine.', false, null),
+  ('Lateral Raises', 'upper_push', 'Strict form, no momentum. Control the eccentric. Most people cheat these and undertrain the medial delt.', false, null),
+  ('Cable Chest Fly or Pec Deck', 'upper_push', 'Full stretch at extension. Isolation finisher.', false, null),
+  ('Tricep Pushdown (rope)', 'upper_push', 'Superset with overhead extension if time is short.', false, null),
+  ('Overhead Tricep Extension', 'upper_push', 'Long head emphasis — most undertrained part of the tricep.', false, null);

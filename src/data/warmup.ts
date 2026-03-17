@@ -2,43 +2,28 @@ import type { WarmUpStep } from '../lib/types'
 
 export const lowerBodyWarmup: WarmUpStep[] = [
   {
-    name: 'Foam Roll Quads & IT Band',
-    description: 'Roll slowly, pause on tender spots',
-    duration: '2 min',
+    name: '5 min light bike or walk',
+    description: 'Get blood flowing, warm up joints',
+    duration: '5 min',
   },
   {
-    name: 'Foam Roll Hamstrings & Glutes',
-    description: 'Focus on any tight areas',
-    duration: '2 min',
+    name: 'Banded Clamshells',
+    description: '2x15 each side. Glute med activation.',
+    reps: '2x15 each side',
   },
   {
-    name: 'Hip Circles',
-    description: 'Standing hip circles, both directions',
-    reps: '10 each direction',
+    name: 'Terminal Knee Extensions (TKE) with band',
+    description: '2x15 each leg. VMO activation.',
+    reps: '2x15 each leg',
   },
   {
-    name: 'Bodyweight Squats',
-    description: 'Full depth, slow and controlled',
-    reps: '15',
-  },
-  {
-    name: 'Walking Knee Hugs',
-    description: 'Pull knee to chest, alternate legs',
-    reps: '10 each leg',
-  },
-  {
-    name: 'Glute Bridges',
-    description: 'Squeeze at top for 2 seconds',
-    reps: '15',
+    name: 'Hip Flexor Stretch',
+    description: '60 sec each side. Deep stretch, don\'t bounce.',
+    duration: '60 sec each side',
   },
   {
     name: 'Leg Swings',
-    description: 'Front-to-back and side-to-side',
+    description: '10 forward/back, 10 side-to-side each leg',
     reps: '10 each direction per leg',
-  },
-  {
-    name: 'Light Goblet Squat',
-    description: 'Use light dumbbell, focus on depth and form',
-    reps: '10',
   },
 ]

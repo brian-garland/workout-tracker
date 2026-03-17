@@ -1,10 +1,11 @@
 import type { SupplementTiming } from '../lib/types'
 
 export const supplements: SupplementTiming[] = [
-  { name: 'Creatine Monohydrate', timing: 'Daily (any time)', dose: '5g' },
-  { name: 'Protein Shake', timing: 'Post-workout (within 1 hour)', dose: '25-30g protein' },
-  { name: 'Pre-Workout / Caffeine', timing: '30 min before training', dose: '1 scoop / 200mg' },
-  { name: 'Fish Oil', timing: 'With meal', dose: '2-3g EPA/DHA' },
-  { name: 'Vitamin D3', timing: 'With breakfast', dose: '2000-5000 IU' },
-  { name: 'Magnesium', timing: 'Before bed', dose: '400mg' },
+  { name: 'Creatine', timing: 'Daily (any time)', dose: '5g' },
+  { name: 'Vitamin D3 + K2', timing: 'Daily (any time)', dose: 'D3 2000-4000 IU + K2 100-200mcg' },
+  { name: 'Omega-3', timing: 'Daily (with meal)', dose: '2-3g EPA+DHA' },
+  { name: 'Magnesium Glycinate', timing: 'Before bed', dose: '300-400mg' },
+  { name: 'Collagen Peptides + Vitamin C', timing: 'Pre-training, knee sessions only (45-60 min before)', dose: '15g collagen + 50mg vitamin C' },
 ]
+
+export const proteinTarget = '135-155g/day'

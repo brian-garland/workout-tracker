@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Card } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
@@ -7,11 +7,10 @@ import { useSettings } from '../../hooks/useSettings'
 import { useSessions } from '../../hooks/useSessions'
 import { weekSchedule, getWeekDates, formatDate, isToday } from '../../data/schedule'
 import { phaseInfo } from '../../data/phases'
-import { supplements } from '../../data/supplements'
+import { supplements, proteinTarget } from '../../data/supplements'
 
 export function Dashboard() {
-  const navigate = useNavigate()
-  const { phase, weekNumber, advanceWeek } = useSettings()
+  const { phase, weekNumber, advanceWeek, rewindWeek } = useSettings()
   const weekDates = getWeekDates(new Date())
   const startDate = formatDate(weekDates[0])
   const endDate = formatDate(weekDates[6])
@@ -32,9 +31,14 @@ export function Dashboard() {
           <Badge variant="primary">Phase {phase}</Badge>
           <span className="ml-2 text-text-muted text-sm">Week {weekNumber}</span>
         </div>
-        <Button variant="ghost" size="sm" onClick={advanceWeek}>
-          Next Week &rarr;
-        </Button>
+        <div className="flex gap-1">
+          <Button variant="ghost" size="sm" onClick={rewindWeek}>
+            &larr; Prev
+          </Button>
+          <Button variant="ghost" size="sm" onClick={advanceWeek}>
+            Next &rarr;
+          </Button>
+        </div>
       </div>
 
       {info && (
@@ -48,44 +52,44 @@ export function Dashboard() {
           const dateStr = formatDate(date)
           const completed = completedDates.has(dateStr)
           const today = isToday(date)
-          const isRest = schedule.sessionType === 'rest'
+          const isRest = schedule.sessionType === 'rest' || schedule.sessionType === 'yoga'
 
           return (
-            <Card
-              key={dateStr}
-              highlight={today}
-              className={`cursor-pointer active:bg-surface-bright transition-colors ${
-                completed ? 'opacity-75' : ''
-              }`}
-              onClick={() => navigate(`/session/${dateStr}`)}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="text-center w-12">
-                    <div className="text-xs text-text-muted uppercase">{schedule.dayName}</div>
-                    <div className="text-lg font-bold">
-                      {date.getDate()}
+            <Link key={dateStr} to={`/session/${dateStr}`} className="block no-underline text-inherit">
+              <Card
+                highlight={today}
+                className={`cursor-pointer active:bg-surface-bright transition-colors ${
+                  completed ? 'opacity-75' : ''
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="text-center w-12">
+                      <div className="text-xs text-text-muted uppercase">{schedule.dayName}</div>
+                      <div className="text-lg font-bold">
+                        {date.getDate()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-medium">{schedule.displayName}</div>
+                      {isRest && (
+                        <div className="text-sm text-text-muted">Recovery day</div>
+                      )}
                     </div>
                   </div>
-                  <div>
-                    <div className="font-medium">{schedule.displayName}</div>
-                    {isRest && (
-                      <div className="text-sm text-text-muted">Recovery day</div>
+                  <div className="flex items-center gap-2">
+                    {completed && (
+                      <svg className="w-6 h-6 text-success" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                      </svg>
                     )}
+                    <svg className="w-5 h-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  {completed && (
-                    <svg className="w-6 h-6 text-success" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                    </svg>
-                  )}
-                  <svg className="w-5 h-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           )
         })}
       </div>
@@ -107,14 +111,18 @@ export function Dashboard() {
         {showSupplements && (
           <div className="mt-3 space-y-2">
             {supplements.map((s) => (
-              <div key={s.name} className="flex justify-between text-sm">
+              <div key={s.name} className="flex justify-between text-sm gap-2">
                 <div>
                   <span className="text-text">{s.name}</span>
                   <span className="text-text-muted ml-2">{s.dose}</span>
                 </div>
-                <span className="text-text-muted text-xs">{s.timing}</span>
+                <span className="text-text-muted text-xs text-right flex-shrink-0">{s.timing}</span>
               </div>
             ))}
+            <div className="pt-2 mt-2 border-t border-surface-bright flex justify-between text-sm">
+              <span className="text-text font-medium">Protein Target</span>
+              <span className="text-primary font-medium">{proteinTarget}</span>
+            </div>
           </div>
         )}
       </Card>
