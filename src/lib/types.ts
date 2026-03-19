@@ -41,6 +41,7 @@ export interface DaySchedule {
   dayName: string
   sessionType: SessionType
   displayName: string
+  note?: string
 }
 
 export interface WarmUpStep {

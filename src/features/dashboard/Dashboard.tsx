@@ -72,6 +72,9 @@ export function Dashboard() {
                     </div>
                     <div>
                       <div className="font-medium">{schedule.displayName}</div>
+                      {schedule.note && (
+                        <div className="text-sm text-text-muted">{schedule.note}</div>
+                      )}
                       {isRest && (
                         <div className="text-sm text-text-muted">Recovery day</div>
                       )}

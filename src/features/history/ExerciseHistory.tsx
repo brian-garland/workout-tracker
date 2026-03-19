@@ -107,7 +107,7 @@ export function ExerciseHistory() {
               <div className="space-y-1">
                 {group.sets.map((set) => (
                   <div key={set.id} className="flex gap-4 text-sm">
-                    <span className="text-text-muted w-8">Set {set.set_number}</span>
+                    <span className="text-text-muted w-10 shrink-0">Set {set.set_number}</span>
                     <span>{set.weight_lbs || '—'} lbs</span>
                     <span className="text-text-muted">&times;</span>
                     <span>{set.reps_completed || '—'} reps</span>
