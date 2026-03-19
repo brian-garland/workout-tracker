@@ -143,6 +143,21 @@ export function SessionView() {
 
   if (isRest) {
     const isYoga = schedule.sessionType === 'yoga'
+
+    if (completed) {
+      return (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Card className="text-center py-12 px-8 space-y-3">
+            <svg className="w-16 h-16 text-success mx-auto" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+            <h2 className="text-xl font-bold">{isYoga ? 'Yoga Complete!' : 'Rest Day Logged!'}</h2>
+            <p className="text-text-muted">Redirecting...</p>
+          </Card>
+        </div>
+      )
+    }
+
     return (
       <div className="space-y-4">
         <div>
@@ -162,6 +177,22 @@ export function SessionView() {
               : 'Recovery is part of the program. Stretch, hydrate, sleep well.'}
           </p>
         </Card>
+        {alreadyCompleted ? (
+          <Card className="text-center py-6 space-y-2">
+            <svg className="w-10 h-10 text-success mx-auto" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+            </svg>
+            <p className="text-text-muted text-sm">Already logged for today</p>
+          </Card>
+        ) : (
+          <Button
+            size="lg"
+            onClick={handleComplete}
+            disabled={saving}
+          >
+            {saving ? 'Saving...' : isYoga ? 'Mark Yoga Complete' : 'Mark Rest Day Complete'}
+          </Button>
+        )}
       </div>
     )
   }
