@@ -71,7 +71,7 @@ export function ExerciseHistory() {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/history')}>
+        <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           &larr; Back
         </Button>
         <h1 className="text-xl font-bold">{exercise?.name || 'Exercise'}</h1>

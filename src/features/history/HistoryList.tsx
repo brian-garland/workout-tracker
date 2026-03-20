@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Card } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
@@ -12,11 +13,32 @@ const categoryLabels: Record<string, string> = {
 
 const categoryOrder = ['lower', 'upper_pull', 'upper_push']
 
+const SCROLL_KEY = 'history-scroll'
+
 export function HistoryList() {
   const { exercises, loading } = useExercises()
 
+  useEffect(() => {
+    if (loading) return
+    const scrollContainer = document.querySelector('main')
+    if (!scrollContainer) return
+
+    const saved = sessionStorage.getItem(SCROLL_KEY)
+    if (saved) {
+      scrollContainer.scrollTop = Number(saved)
+      sessionStorage.removeItem(SCROLL_KEY)
+    }
+  }, [loading])
+
   if (loading) {
     return <div className="text-center text-text-muted py-12">Loading...</div>
+  }
+
+  const saveScroll = () => {
+    const scrollContainer = document.querySelector('main')
+    if (scrollContainer) {
+      sessionStorage.setItem(SCROLL_KEY, String(scrollContainer.scrollTop))
+    }
   }
 
   const grouped = new Map<string, Exercise[]>()
@@ -39,7 +61,7 @@ export function HistoryList() {
           <div key={cat} className="space-y-2">
             <Badge variant="primary">{categoryLabels[cat]}</Badge>
             {exs.map((ex) => (
-              <Link key={ex.id} to={`/history/${ex.id}`} className="block no-underline text-inherit">
+              <Link key={ex.id} to={`/history/${ex.id}`} className="block no-underline text-inherit" onClick={saveScroll}>
                 <Card
                   className="cursor-pointer active:bg-surface-bright transition-colors"
                 >
