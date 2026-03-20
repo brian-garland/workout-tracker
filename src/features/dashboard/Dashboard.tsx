@@ -114,10 +114,10 @@ export function Dashboard() {
         {showSupplements && (
           <div className="mt-3 space-y-2">
             {supplements.map((s) => (
-              <div key={s.name} className="flex justify-between text-sm gap-2">
-                <div>
-                  <span className="text-text">{s.name}</span>
-                  <span className="text-text-muted ml-2">{s.dose}</span>
+              <div key={s.name} className="flex justify-between text-sm gap-4">
+                <div className="min-w-0">
+                  <div className="text-text">{s.name}</div>
+                  <div className="text-text-muted text-xs">{s.dose}</div>
                 </div>
                 <span className="text-text-muted text-xs text-right flex-shrink-0">{s.timing}</span>
               </div>
