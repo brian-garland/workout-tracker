@@ -1,4 +1,5 @@
 import type { DaySchedule } from '../lib/types'
+import { phaseWeekCounts } from './phases'
 
 export const weekSchedule: DaySchedule[] = [
   { dayName: 'Mon', sessionType: 'lower_a', displayName: 'Lower Body A' },
@@ -38,4 +39,27 @@ export function formatDate(date: Date): string {
 export function isToday(date: Date): boolean {
   const today = new Date()
   return formatDate(date) === formatDate(today)
+}
+
+function getPhaseOffset(phase: number): number {
+  let offset = 0
+  for (let p = 1; p < phase; p++) {
+    offset += phaseWeekCounts[p] ?? 0
+  }
+  return offset
+}
+
+export function getWeekDatesForProgram(
+  programStartDate: string,
+  phase: number,
+  weekNumber: number
+): Date[] {
+  const totalWeeks = getPhaseOffset(phase) + (weekNumber - 1)
+  const start = new Date(programStartDate + 'T12:00:00')
+  start.setDate(start.getDate() + totalWeeks * 7)
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(start)
+    d.setDate(start.getDate() + i)
+    return d
+  })
 }

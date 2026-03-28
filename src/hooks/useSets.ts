@@ -20,6 +20,19 @@ export async function saveSets(
   return true
 }
 
+export async function deleteSetsForSession(sessionId: number): Promise<boolean> {
+  const { error } = await supabase
+    .from('sets')
+    .delete()
+    .eq('session_id', sessionId)
+
+  if (error) {
+    console.error('Error deleting sets:', error)
+    return false
+  }
+  return true
+}
+
 export async function getSetsForSession(sessionId: number): Promise<SetLog[]> {
   const { data, error } = await supabase
     .from('sets')

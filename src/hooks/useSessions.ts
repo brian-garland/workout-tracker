@@ -24,36 +24,12 @@ export function useSessions(startDate?: string, endDate?: string) {
   return { sessions, loading, refetch: fetchSessions }
 }
 
-export async function createSession(params: {
-  date: string
-  session_type: SessionType
-  phase: number
-  week_number: number
-  pain_level: number | null
-  notes: string | null
-}): Promise<Session | null> {
-  const { data, error } = await supabase
-    .from('sessions')
-    .insert({
-      ...params,
-      completed_at: new Date().toISOString(),
-    })
-    .select()
-    .single()
-
-  if (error) {
-    console.error('Error creating session:', error)
-    return null
-  }
-  return data as Session
-}
-
 export async function getSessionByDate(date: string): Promise<Session | null> {
   const { data, error } = await supabase
     .from('sessions')
     .select('*')
     .eq('date', date)
-    .order('completed_at', { ascending: false })
+    .order('id', { ascending: false })
     .limit(1)
     .maybeSingle()
 
@@ -62,4 +38,60 @@ export async function getSessionByDate(date: string): Promise<Session | null> {
     return null
   }
   return data as Session | null
+}
+
+export async function createDraftSession(params: {
+  date: string
+  session_type: SessionType
+  phase: number
+  week_number: number
+}): Promise<Session | null> {
+  const { data, error } = await supabase
+    .from('sessions')
+    .insert({
+      ...params,
+      pain_level: null,
+      notes: null,
+      completed_at: null,
+    })
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error creating draft session:', error)
+    return null
+  }
+  return data as Session
+}
+
+export async function completeSession(sessionId: number): Promise<boolean> {
+  const { error } = await supabase
+    .from('sessions')
+    .update({ completed_at: new Date().toISOString() })
+    .eq('id', sessionId)
+
+  if (error) {
+    console.error('Error completing session:', error)
+    return false
+  }
+  return true
+}
+
+export async function updateSession(
+  sessionId: number,
+  params: {
+    pain_level?: number | null
+    notes?: string | null
+  }
+): Promise<boolean> {
+  const { error } = await supabase
+    .from('sessions')
+    .update(params)
+    .eq('id', sessionId)
+
+  if (error) {
+    console.error('Error updating session:', error)
+    return false
+  }
+  return true
 }

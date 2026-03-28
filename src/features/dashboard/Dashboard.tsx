@@ -5,13 +5,13 @@ import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { useSettings } from '../../hooks/useSettings'
 import { useSessions } from '../../hooks/useSessions'
-import { weekSchedule, getWeekDates, formatDate, isToday } from '../../data/schedule'
+import { weekSchedule, getWeekDatesForProgram, formatDate, isToday } from '../../data/schedule'
 import { phaseInfo } from '../../data/phases'
 import { supplements, proteinTarget } from '../../data/supplements'
 
 export function Dashboard() {
-  const { phase, weekNumber, advanceWeek, rewindWeek } = useSettings()
-  const weekDates = getWeekDates(new Date())
+  const { phase, weekNumber, programStartDate, advanceWeek, rewindWeek } = useSettings()
+  const weekDates = getWeekDatesForProgram(programStartDate, phase, weekNumber)
   const startDate = formatDate(weekDates[0])
   const endDate = formatDate(weekDates[6])
   const { sessions } = useSessions(startDate, endDate)
@@ -19,6 +19,9 @@ export function Dashboard() {
 
   const completedDates = new Set(
     sessions.filter((s) => s.completed_at).map((s) => s.date)
+  )
+  const draftDates = new Set(
+    sessions.filter((s) => !s.completed_at).map((s) => s.date)
   )
 
   const info = phaseInfo[phase]
@@ -51,6 +54,7 @@ export function Dashboard() {
           const schedule = weekSchedule[i]
           const dateStr = formatDate(date)
           const completed = completedDates.has(dateStr)
+          const isDraft = !completed && draftDates.has(dateStr)
           const today = isToday(date)
           const isRest = schedule.sessionType === 'rest' || schedule.sessionType === 'yoga'
 
@@ -84,6 +88,11 @@ export function Dashboard() {
                     {completed && (
                       <svg className="w-6 h-6 text-success" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                      </svg>
+                    )}
+                    {isDraft && (
+                      <svg className="w-6 h-6 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                       </svg>
                     )}
                     <svg className="w-5 h-5 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
