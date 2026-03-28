@@ -54,8 +54,8 @@ export function SessionView() {
 
   const sessionRef = useRef<Session | null>(null)
   const setsStateRef = useRef<ExerciseSetsState>({})
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
-  const statusTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const statusTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const savingRef = useRef(false)
   const initializedRef = useRef(false)
 
