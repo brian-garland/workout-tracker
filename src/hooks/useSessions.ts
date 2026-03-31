@@ -24,6 +24,21 @@ export function useSessions(startDate?: string, endDate?: string) {
   return { sessions, loading, refetch: fetchSessions }
 }
 
+export async function getEarliestSessionDate(): Promise<string | null> {
+  const { data, error } = await supabase
+    .from('sessions')
+    .select('date')
+    .order('date', { ascending: true })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) {
+    console.error('Error fetching earliest session:', error)
+    return null
+  }
+  return data?.date ?? null
+}
+
 export async function getSessionByDate(date: string): Promise<Session | null> {
   const { data, error } = await supabase
     .from('sessions')

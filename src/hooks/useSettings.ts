@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { phaseWeekCounts } from '../data/phases'
 import { getWeekDates, formatDate, getCurrentPhaseAndWeek } from '../data/schedule'
+import { getEarliestSessionDate } from './useSessions'
 
 interface Settings {
   phase: number
@@ -40,6 +41,24 @@ export function useSettings() {
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
   }, [settings])
+
+  // Auto-correct programStartDate from earliest session in database
+  useEffect(() => {
+    getEarliestSessionDate().then((earliestDate) => {
+      if (!earliestDate) return
+      const earliest = new Date(earliestDate + 'T12:00:00')
+      const dayOfWeek = (earliest.getDay() + 6) % 7 // Monday = 0
+      const monday = new Date(earliest)
+      monday.setDate(earliest.getDate() - dayOfWeek)
+      const correctStart = formatDate(monday)
+      if (correctStart < settings.programStartDate) {
+        setSettings((prev) => {
+          const current = getCurrentPhaseAndWeek(correctStart)
+          return { ...prev, programStartDate: correctStart, phase: current.phase, weekNumber: current.weekNumber }
+        })
+      }
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const advanceWeek = useCallback(() => {
     setSettings((prev) => {
