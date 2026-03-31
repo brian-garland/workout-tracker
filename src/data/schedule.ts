@@ -63,3 +63,28 @@ export function getWeekDatesForProgram(
     return d
   })
 }
+
+/**
+ * Calculate the current phase and week number based on the program start date
+ * and today's date.
+ */
+export function getCurrentPhaseAndWeek(programStartDate: string, referenceDate?: Date): { phase: number; weekNumber: number } {
+  const start = new Date(programStartDate + 'T12:00:00')
+  const ref = referenceDate ? new Date(referenceDate) : new Date()
+  ref.setHours(12, 0, 0, 0)
+
+  const diffMs = ref.getTime() - start.getTime()
+  const diffWeeks = Math.max(0, Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000)))
+
+  let remainingWeeks = diffWeeks
+  for (let p = 1; p <= 3; p++) {
+    const weeksInPhase = phaseWeekCounts[p] ?? 6
+    if (remainingWeeks < weeksInPhase) {
+      return { phase: p, weekNumber: remainingWeeks + 1 }
+    }
+    remainingWeeks -= weeksInPhase
+  }
+
+  // Past the end of all phases — return last week
+  return { phase: 3, weekNumber: phaseWeekCounts[3] ?? 6 }
+}

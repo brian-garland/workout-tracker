@@ -1,16 +1,47 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Card } from '../../components/ui/Card'
 import { Badge } from '../../components/ui/Badge'
 import { Button } from '../../components/ui/Button'
 import { useSettings } from '../../hooks/useSettings'
 import { useSessions } from '../../hooks/useSessions'
-import { weekSchedule, getWeekDatesForProgram, formatDate, isToday } from '../../data/schedule'
-import { phaseInfo } from '../../data/phases'
+import { weekSchedule, getWeekDatesForProgram, formatDate, isToday, getCurrentPhaseAndWeek } from '../../data/schedule'
+import { phaseInfo, phaseWeekCounts } from '../../data/phases'
 import { supplements, proteinTarget } from '../../data/supplements'
 
 export function Dashboard() {
-  const { phase, weekNumber, programStartDate, advanceWeek, rewindWeek } = useSettings()
+  const { programStartDate } = useSettings()
+  const current = getCurrentPhaseAndWeek(programStartDate)
+
+  const [viewPhase, setViewPhase] = useState(current.phase)
+  const [viewWeekNumber, setViewWeekNumber] = useState(current.weekNumber)
+
+  const phase = viewPhase
+  const weekNumber = viewWeekNumber
+
+  const advanceWeek = useCallback(() => {
+    setViewWeekNumber((wk) => {
+      const maxWeeks = phaseWeekCounts[viewPhase] ?? 6
+      if (wk + 1 > maxWeeks && viewPhase < 3) {
+        setViewPhase((p) => p + 1)
+        return 1
+      }
+      if (wk + 1 > maxWeeks) return wk
+      return wk + 1
+    })
+  }, [viewPhase])
+
+  const rewindWeek = useCallback(() => {
+    setViewWeekNumber((wk) => {
+      if (wk > 1) return wk - 1
+      if (viewPhase > 1) {
+        setViewPhase((p) => p - 1)
+        return phaseWeekCounts[viewPhase - 1] ?? 6
+      }
+      return wk
+    })
+  }, [viewPhase])
+
   const weekDates = getWeekDatesForProgram(programStartDate, phase, weekNumber)
   const startDate = formatDate(weekDates[0])
   const endDate = formatDate(weekDates[6])

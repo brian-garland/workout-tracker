@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { phaseWeekCounts } from '../data/phases'
-import { getWeekDates, formatDate } from '../data/schedule'
+import { getWeekDates, formatDate, getCurrentPhaseAndWeek } from '../data/schedule'
 
 interface Settings {
   phase: number
@@ -26,7 +26,10 @@ export function useSettings() {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       try {
-        return { ...defaultSettings, ...JSON.parse(stored) }
+        const parsed = { ...defaultSettings, ...JSON.parse(stored) }
+        // Auto-calculate current phase/week from program start date
+        const current = getCurrentPhaseAndWeek(parsed.programStartDate)
+        return { ...parsed, phase: current.phase, weekNumber: current.weekNumber }
       } catch {
         return defaultSettings
       }

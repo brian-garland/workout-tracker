@@ -13,7 +13,7 @@ import {
   getSessionByDate,
 } from '../../hooks/useSessions'
 import { saveSets, deleteSetsForSession, getSetsForSession } from '../../hooks/useSets'
-import { getSessionForDate, formatDate } from '../../data/schedule'
+import { getSessionForDate, formatDate, getCurrentPhaseAndWeek } from '../../data/schedule'
 import { getPhaseExercises } from '../../data/phases'
 import { ExerciseCard } from './ExerciseCard'
 import { WarmUpChecklist } from './WarmUpChecklist'
@@ -27,13 +27,18 @@ interface ExerciseSetsState {
 export function SessionView() {
   const { date } = useParams<{ date: string }>()
   const navigate = useNavigate()
-  const { phase, weekNumber } = useSettings()
+  const { programStartDate } = useSettings()
   const { getExercise, loading: exercisesLoading } = useExerciseByName()
 
   const sessionDate = useMemo(() => {
     if (!date) return new Date()
     return new Date(date + 'T12:00:00')
   }, [date])
+
+  const { phase, weekNumber } = useMemo(
+    () => getCurrentPhaseAndWeek(programStartDate, sessionDate),
+    [programStartDate, sessionDate]
+  )
 
   const dateStr = formatDate(sessionDate)
   const schedule = getSessionForDate(sessionDate)
